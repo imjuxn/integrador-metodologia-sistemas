@@ -1,0 +1,77 @@
+INTEGRANTE 1 - SISTEMA BASE Y ANALISIS DE CALIDAD
+
+Este texto es una base para integrar al informe grupal. Completar los nombres, enlaces y capturas reales antes de entregar.
+
+2. DESCRIPCION DEL SISTEMA BASE
+
+2.1. Dominio, proposito y alcance
+
+El sistema elegido es una gestion simple de solicitudes academicas. Permite registrar pedidos de estudiantes y seguir su estado. En esta version se trabaja desde consola, con datos de ejemplo. El objetivo del integrador no es crear un sistema grande, sino revisar la calidad del codigo y mejorarlo sin cambiar su funcionamiento.
+
+El alcance incluye registro de solicitudes, asignacion de responsables, cambio de estado, consulta por estado y un reporte basico. No incluye usuarios reales, inicio de sesion, interfaz web ni base de datos. Los datos se conservan en memoria mientras el programa esta abierto.
+
+2.2. Actores, entidades y funcionalidades
+
+El estudiante es quien origina una solicitud. El personal administrativo registra el pedido, lo asigna y cambia su estado. El responsable o area recibe la solicitud asignada. Esta version de consola no implementa cuentas ni permisos; los actores describen el uso esperado, no roles tecnicos ya implementados.
+
+Las tres entidades principales son Estudiante (legajo, nombre, correo), Solicitud (numero, estudiante, tipo, detalle, prioridad, estado y responsable) y Responsable (nombre y area). Estado es una enumeracion con ABIERTA, EN_PROCESO y CERRADA.
+
+Las operaciones verificables son: registrar una solicitud, asignar un responsable, cambiar el estado, listar por estado y generar un reporte simple. Hay cinco operaciones, por encima del minimo de cuatro de la consigna.
+
+2.3. Tecnologias y almacenamiento
+
+Se uso Java, Maven y JUnit. SolicitudService guarda las solicitudes en un LinkedHashMap en memoria. App muestra una ejecucion de ejemplo. Las pruebas automatizadas estan en SolicitudServiceTest. No se incorporo una base de datos.
+
+2.4. Version inicial y funcionamiento
+
+La version inicial esta identificada con el tag estado-inicial (commit 07b71a2). Antes del refactoring se ejecutaron ocho pruebas: pasaron todas, sin fallos ni errores. El ejemplo de consola mostro:
+Solicitudes en proceso: 1
+1 | CERTIFICADO | EN_PROCESO
+
+Agregar aqui una captura de la salida del programa y otra del resultado de las pruebas. En el repositorio grupal debera indicarse el enlace real al tag estado-inicial.
+
+3. CALIDAD EXTERNA E INTERNA
+
+Desde la mirada del usuario, el ejemplo permite registrar una solicitud, asignarla, cambiar su estado y verla en una consulta o reporte. Para los casos probados, la salida es la esperada. Una limitacion visible es que no hay interfaz grafica y los datos se pierden al cerrar el programa.
+
+Desde la mirada del equipo tecnico, el codigo inicial funciona, pero mezcla algunas responsabilidades. El metodo registrar contiene las validaciones, la creacion de la solicitud y su almacenamiento. Ademas, la clase que administra solicitudes tambien arma el texto del reporte. Estos problemas no impiden usar el ejemplo hoy, pero pueden dificultar cambios futuros.
+
+4. DOS CODE SMELLS DETECTADOS
+
+CS-01. Metodo registrar con varias responsabilidades
+Ubicacion inicial: src/main/java/ar/edu/metodologia/SolicitudService.java, lineas 12 a 37.
+Evidencia: en un mismo metodo se validan siete condiciones y luego se crea y guarda la solicitud.
+Impacto: cuesta distinguir rapidamente que parte valida y que parte registra.
+Riesgo de mantenimiento: al cambiar una regla de validacion se puede afectar el flujo de registro.
+Prioridad: media.
+Accion: se aplico Extract Method para separar la validacion del resto del registro.
+
+CS-02. Generacion del reporte dentro del servicio de solicitudes
+Ubicacion inicial: src/main/java/ar/edu/metodologia/SolicitudService.java, metodo generarReporte.
+Evidencia: SolicitudService administra solicitudes y tambien decide el formato del texto que se muestra.
+Impacto: un cambio de formato obliga a modificar la clase que contiene la logica de solicitudes.
+Riesgo de mantenimiento: se acumulan motivos distintos para cambiar la misma clase.
+Prioridad: media.
+Accion prevista: el equipo puede reubicar la generacion del reporte en una clase dedicada. Esta mejora no se implemento en el aporte del integrante 1.
+
+6. REFACTORING R-01 - EXTRACT METHOD
+
+Problema asociado: CS-01.
+Version anterior: el metodo registrar validaba datos, creaba la solicitud y la guardaba.
+Cambio realizado: se extrajeron las validaciones al metodo privado validarRegistro. registrar sigue llamandolo antes de crear la solicitud.
+Version posterior: registrar muestra los pasos principales del proceso, mientras validarRegistro contiene las reglas de entrada.
+Commit del cambio: 742237a (Extraer validaciones del registro de solicitudes).
+Verificacion: antes y despues del cambio pasaron las mismas ocho pruebas. La salida del ejemplo de consola fue identica en ambos estados.
+Limite de la verificacion: estas pruebas no cubren todas las combinaciones de datos posibles; respaldan los escenarios probados, no garantizan ausencia total de errores.
+
+EVIDENCIAS A INCORPORAR EN EL INFORME
+
+1. Captura de git show estado-inicial:src/main/java/ar/edu/metodologia/SolicitudService.java, donde se ve registrar antes del cambio.
+2. Captura de registrar y validarRegistro en la version actual.
+3. Captura del resultado de .\mvnw.cmd test (8 pruebas correctas).
+4. Captura de la salida de java -cp target/classes ar.edu.metodologia.App.
+5. Enlace al commit 742237a una vez publicado en el repositorio grupal.
+
+USO DE IA
+
+Codex se utilizo como apoyo para crear este prototipo, proponer las pruebas, aplicar el refactoring y redactar un borrador de la documentacion. El integrante debe revisar el codigo, comprender cada cambio, corregir lo que corresponda y adjuntar la evidencia de esta interaccion segun la consigna. No presentar este borrador como trabajo realizado sin revision humana.
