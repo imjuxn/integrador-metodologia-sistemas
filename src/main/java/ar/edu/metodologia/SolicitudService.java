@@ -10,6 +10,13 @@ public class SolicitudService {
     private int siguienteNumero = 1;
 
     public Solicitud registrar(Estudiante estudiante, String tipo, String detalle, String prioridad) {
+        validarRegistro(estudiante, tipo, detalle, prioridad);
+        Solicitud solicitud = new Solicitud(siguienteNumero++, estudiante, tipo.trim(), detalle.trim(), prioridad);
+        solicitudes.put(solicitud.getNumero(), solicitud);
+        return solicitud;
+    }
+
+    private void validarRegistro(Estudiante estudiante, String tipo, String detalle, String prioridad) {
         if (estudiante == null) {
             throw new IllegalArgumentException("El estudiante es obligatorio");
         }
@@ -31,9 +38,6 @@ public class SolicitudService {
         if (!"ALTA".equals(prioridad) && !"MEDIA".equals(prioridad) && !"BAJA".equals(prioridad)) {
             throw new IllegalArgumentException("La prioridad debe ser ALTA, MEDIA o BAJA");
         }
-        Solicitud solicitud = new Solicitud(siguienteNumero++, estudiante, tipo.trim(), detalle.trim(), prioridad);
-        solicitudes.put(solicitud.getNumero(), solicitud);
-        return solicitud;
     }
 
     public void asignarResponsable(int numero, Responsable responsable) {
