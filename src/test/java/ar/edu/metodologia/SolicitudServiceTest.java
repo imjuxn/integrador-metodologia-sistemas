@@ -64,4 +64,58 @@ class SolicitudServiceTest {
         assertThrows(IllegalArgumentException.class, () -> servicio.registrar(estudiante, "CERTIFICADO", "Alumno regular", "URGENTE"));
     }
 
+    @Test
+void registrarConDatosSolicitud() {
+    SolicitudService servicio = new SolicitudService();
+
+    Estudiante estudiante = new Estudiante(
+        "12345",
+        "Ana Perez",
+        "ana@example.com"
+    );
+
+    DatosSolicitud datos = new DatosSolicitud(
+        estudiante,
+        "CERTIFICADO",
+        "Certificado de alumno regular",
+        "MEDIA"
+    );
+
+    Solicitud solicitud = servicio.registrar(datos);
+
+    assertEquals("CERTIFICADO", solicitud.getTipo());
+    assertEquals("MEDIA", solicitud.getPrioridad());
+    assertEquals(Estado.ABIERTA, solicitud.getEstado());
+    }
+
+    @Test
+    void registrarConDatosSolicitudEliminaEspacios() {
+        SolicitudService servicio = new SolicitudService();
+        Estudiante estudiante = new Estudiante(
+            "12345", "Ana Perez", "ana@example.com"
+        );
+
+        DatosSolicitud datos = new DatosSolicitud(
+            estudiante,
+            " CERTIFICADO ",
+            " Alumno regular ",
+            "MEDIA"
+        );
+
+        Solicitud solicitud = servicio.registrar(datos);
+
+        assertEquals("CERTIFICADO", solicitud.getTipo());
+        assertEquals("Alumno regular", solicitud.getDetalle());
+    }
+
+    @Test
+    void registrarConDatosSolicitudNulos() {
+        SolicitudService servicio = new SolicitudService();
+
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> servicio.registrar((DatosSolicitud) null)
+        );
+    }
+
 }

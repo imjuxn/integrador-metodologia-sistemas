@@ -9,31 +9,62 @@ public class SolicitudService {
     private final Map<Integer, Solicitud> solicitudes = new LinkedHashMap<>();
     private int siguienteNumero = 1;
 
-    public Solicitud registrar(Estudiante estudiante, String tipo, String detalle, String prioridad) {
+    public Solicitud registrar(DatosSolicitud datos) {
+        if (datos == null) {
+            throw new IllegalArgumentException("Los datos de la solicitud son obligatorios");
+        }
+
+        Estudiante estudiante = datos.estudiante();
+        String tipo = datos.tipo();
+        String detalle = datos.detalle();
+        String prioridad = datos.prioridad();
+
         if (estudiante == null) {
             throw new IllegalArgumentException("El estudiante es obligatorio");
-        }
-        if (estudiante.legajo() == null || estudiante.legajo().isBlank()) {
-            throw new IllegalArgumentException("El legajo es obligatorio");
-        }
-        if (estudiante.nombre() == null || estudiante.nombre().isBlank()) {
-            throw new IllegalArgumentException("El nombre es obligatorio");
-        }
-        if (estudiante.correo() == null || !estudiante.correo().contains("@")) {
-            throw new IllegalArgumentException("El correo no es valido");
-        }
-        if (tipo == null || tipo.isBlank()) {
-            throw new IllegalArgumentException("El tipo es obligatorio");
-        }
-        if (detalle == null || detalle.isBlank()) {
-            throw new IllegalArgumentException("El detalle es obligatorio");
-        }
-        if (!"ALTA".equals(prioridad) && !"MEDIA".equals(prioridad) && !"BAJA".equals(prioridad)) {
-            throw new IllegalArgumentException("La prioridad debe ser ALTA, MEDIA o BAJA");
-        }
-        Solicitud solicitud = new Solicitud(siguienteNumero++, estudiante, tipo.trim(), detalle.trim(), prioridad);
-        solicitudes.put(solicitud.getNumero(), solicitud);
-        return solicitud;
+            }
+            if (estudiante.legajo() == null || estudiante.legajo().isBlank()) {
+                throw new IllegalArgumentException("El legajo es obligatorio");
+            }
+            if (estudiante.nombre() == null || estudiante.nombre().isBlank()) {
+                throw new IllegalArgumentException("El nombre es obligatorio");
+            }
+            if (estudiante.correo() == null || !estudiante.correo().contains("@")) {
+                throw new IllegalArgumentException("El correo no es valido");
+            }
+            if (tipo == null || tipo.isBlank()) {
+                throw new IllegalArgumentException("El tipo es obligatorio");
+            }
+            if (detalle == null || detalle.isBlank()) {
+                throw new IllegalArgumentException("El detalle es obligatorio");
+            }
+            if (!"ALTA".equals(prioridad) && !"MEDIA".equals(prioridad) && !"BAJA".equals(prioridad)) {
+                throw new IllegalArgumentException("La prioridad debe ser ALTA, MEDIA o BAJA");
+            }
+
+            Solicitud solicitud = new Solicitud(
+                siguienteNumero++, 
+                estudiante, 
+                tipo.trim(), 
+                detalle.trim(), 
+                prioridad);
+            
+            solicitudes.put(solicitud.getNumero(), solicitud);
+
+            return solicitud;
+    }
+
+    public Solicitud registrar(
+        Estudiante estudiante,
+        String tipo,
+        String detalle,
+        String prioridad) {
+
+        return registrar(new DatosSolicitud(
+            estudiante,
+            tipo,
+            detalle,
+            prioridad
+        ));
     }
 
     public void asignarResponsable(int numero, Responsable responsable) {
