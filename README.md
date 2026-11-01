@@ -12,4 +12,4 @@ Java 17 o superior, Maven y JUnit. Ejecutar las pruebas con `.\mvnw.cmd test` en
 
 Para ejecutar el ejemplo: `.\mvnw.cmd package` y `java -cp target/classes ar.edu.metodologia.App`.
 
-El archivo `docs/integrante1.md` documenta el diagnostico y el refactoring del integrante 1.
+El archivo `docs/integrante1.txt` documenta el diagnostico y el refactoring del integrante 1.
