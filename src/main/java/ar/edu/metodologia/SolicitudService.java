@@ -28,9 +28,8 @@ public class SolicitudService {
         if (detalle == null || detalle.isBlank()) {
             throw new IllegalArgumentException("El detalle es obligatorio");
         }
-        if (!"ALTA".equals(prioridad) && !"MEDIA".equals(prioridad) && !"BAJA".equals(prioridad)) {
-            throw new IllegalArgumentException("La prioridad debe ser ALTA, MEDIA o BAJA");
-        }
+        validarPrioridad(prioridad);
+
         Solicitud solicitud = new Solicitud(siguienteNumero++, estudiante, tipo.trim(), detalle.trim(), prioridad);
         solicitudes.put(solicitud.getNumero(), solicitud);
         return solicitud;
@@ -76,5 +75,11 @@ public class SolicitudService {
             throw new IllegalArgumentException("No existe la solicitud " + numero);
         }
         return solicitud;
+    }
+
+    private void validarPrioridad(String prioridad) {
+        if (!"ALTA".equals(prioridad) && !"MEDIA".equals(prioridad) && !"BAJA".equals(prioridad)) {
+            throw new IllegalArgumentException("La prioridad debe ser ALTA, MEDIA o BAJA");
+        }
     }
 }
