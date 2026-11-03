@@ -73,13 +73,7 @@ private void validarRegistro(
         if (detalle == null || detalle.isBlank()) {
             throw new IllegalArgumentException("El detalle es obligatorio");
         }
-        if (!"ALTA".equals(prioridad)
-                && !"MEDIA".equals(prioridad)
-                && !"BAJA".equals(prioridad)) {
-            throw new IllegalArgumentException(
-                "La prioridad debe ser ALTA, MEDIA o BAJA"
-            );
-        }
+        validarPrioridad(prioridad);
     }
 
     public void asignarResponsable(int numero, Responsable responsable) {
@@ -122,5 +116,11 @@ private void validarRegistro(
             throw new IllegalArgumentException("No existe la solicitud " + numero);
         }
         return solicitud;
+    }
+
+    private void validarPrioridad(String prioridad) {
+        if (!"ALTA".equals(prioridad) && !"MEDIA".equals(prioridad) && !"BAJA".equals(prioridad)) {
+            throw new IllegalArgumentException("La prioridad debe ser ALTA, MEDIA o BAJA");
+        }
     }
 }
