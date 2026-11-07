@@ -8,6 +8,7 @@ import java.util.Map;
 public class SolicitudService {
     private final Map<Integer, Solicitud> solicitudes = new LinkedHashMap<>();
     private int siguienteNumero = 1;
+    private final ReporteSolicitudes reporte = new ReporteSolicitudes();
 
 public Solicitud registrar(DatosSolicitud datos) {
     if (datos == null) {
@@ -101,13 +102,7 @@ private void validarRegistro(
     }
 
     public String generarReporte() {
-        StringBuilder reporte = new StringBuilder();
-        for (Solicitud solicitud : solicitudes.values()) {
-            reporte.append(solicitud.getNumero()).append(" | ")
-                   .append(solicitud.getTipo()).append(" | ")
-                   .append(solicitud.getEstado()).append("\n");
-        }
-        return reporte.toString();
+        return reporte.generar(solicitudes.values());
     }
 
     private Solicitud obtener(int numero) {
